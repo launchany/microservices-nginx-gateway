@@ -1,0 +1,33 @@
+products:
+  build: ../microservices-sinatra-products/
+  command: bundle exec ruby products_service.rb
+  ports:
+  - "4567:4567"
+  links:
+  - mongodb
+  - mongodb:mongodb.cloud66.local
+  environment:
+    - RAILS_ENV=production
+    - RACK_ENV=production
+inventory:
+  build: ../microservices-node-inventory/
+  command: npm start
+  ports:
+  - "8080:8080"
+  links:
+  - mongodb
+  - mongodb:mongodb.cloud66.local
+  environment:
+    - NODE_ENV=production
+    - MONGODB_ADDRESS=mongodb
+mongodb:
+  image: mongo
+nginxgw:
+  build: .
+  command: service nginx start
+  ports:
+  - "80:80"
+  links:
+    - products:products.cloud66.local
+    - inventory:inventory.cloud66.local
+  environment:
