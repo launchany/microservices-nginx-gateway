@@ -1,0 +1,35 @@
+services:
+
+  products:
+    git_url: git@github.com:launchany/microservices-sinatra-products.git
+    git_branch: master
+    command: bundle exec ruby products_service.rb
+    build_root: .
+    ports:
+      - container: 4567
+    env_vars:
+      RAILS_ENV: production
+      RACK_ENV: production
+
+  inventory:
+    git_url: git@github.com:launchany/microservices-node-inventory.git
+    git_branch: master
+    command: npm start
+    build_root: .
+    ports:
+      - container: 8080
+    env_vars:
+      NODE_ENV: production
+
+  nginxgw:
+    git_url: git@github.com:launchany/microservices-nginx-gateway.git
+    git_branch: master
+    command: service nginx start
+    build_root: .
+    ports:
+      - container: 80
+        http: 80
+        https: 443
+
+databases:
+  - mongodb
